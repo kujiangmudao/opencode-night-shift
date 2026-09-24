@@ -8,7 +8,8 @@
     ".": "./src/night-shift.js"
   },
   "files": [
-    "src"
+    "src",
+    "assets"
   ],
   "scripts": {
     "test": "node --test"

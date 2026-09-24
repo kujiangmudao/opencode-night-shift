@@ -13,3 +13,4 @@ Initial release.
 - **Robust config**: legacy single-session migration, BOM tolerance, unknown-field preservation, `endAt` derived from `endTime` when omitted.
 - **Performance**: tracks the last assistant message via `message.updated` and fetches only that message (with a full-list fallback).
 - Zero dependencies, 22 tests, CI on Linux + Windows.
+- Bilingual README (English + 简体中文) with a design banner, a how-it-works diagram and a use-case table.

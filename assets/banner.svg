@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" fill="none" role="img" aria-label="opencode-night-shift">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="320" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0a0f1f"/>
+      <stop offset="1" stop-color="#141b31"/>
+    </linearGradient>
+    <linearGradient id="moon" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#f8e7a8"/>
+      <stop offset="1" stop-color="#dfb54a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="320" rx="24" fill="url(#bg)"/>
+  <circle cx="248" cy="66" r="1.8" fill="#98a4bb" opacity="0.8"/>
+  <circle cx="322" cy="118" r="1.4" fill="#98a4bb" opacity="0.6"/>
+  <circle cx="420" cy="58" r="1.6" fill="#98a4bb" opacity="0.7"/>
+  <circle cx="520" cy="132" r="1.3" fill="#98a4bb" opacity="0.5"/>
+  <circle cx="612" cy="70" r="1.7" fill="#98a4bb" opacity="0.7"/>
+  <circle cx="700" cy="120" r="1.4" fill="#98a4bb" opacity="0.5"/>
+  <path fill-rule="evenodd" d="M92,42a34,34 0 1,0 68,0a34,34 0 1,0 -68,0z M112,36a26,26 0 1,0 52,0a26,26 0 1,0 -52,0z" fill="url(#moon)"/>
+  <text x="76" y="176" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="52" font-weight="700" fill="#eef2ff">opencode-night-shift</text>
+  <text x="76" y="220" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="23" fill="#9aa7bd">Shift-based session supervisor for opencode</text>
+  <text x="76" y="256" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="19" fill="#6f7c93">让会话一直干活，到点自动收工</text>
+  <rect x="812" y="52" width="392" height="216" rx="16" fill="#0d1426" stroke="#26304a"/>
+  <circle cx="842" cy="80" r="5" fill="#f87171"/>
+  <circle cx="862" cy="80" r="5" fill="#fbbf24"/>
+  <circle cx="882" cy="80" r="5" fill="#34d399"/>
+  <text x="840" y="126" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#7dd3fc">$ shift 23:00 -&gt; 08:30</text>
+  <text x="840" y="160" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#a5b4cf">[ses_a] idle -&gt; continued x12</text>
+  <text x="840" y="190" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#a5b4cf">[ses_b] idle -&gt; continued x7</text>
+  <text x="840" y="220" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#f8e7a8">[08:30] shift ended</text>
+  <text x="840" y="250" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="16" fill="#34d399">&gt; good morning</text>
+</svg>

@@ -1,45 +1,53 @@
-# opencode-night-shift
+<div align="center">
 
-> 给 opencode 的**班次制值守插件**：让多个会话一直干活，到点自动收工。
-> Shift-based session supervisor for opencode — keep multiple sessions working until an end time, then stop.
+<img src="assets/banner.svg" alt="opencode-night-shift" width="100%">
+
+**English** · [简体中文](README.zh-CN.md)
 
 [![CI](https://github.com/kujiangmudao/opencode-night-shift/actions/workflows/ci.yml/badge.svg)](https://github.com/kujiangmudao/opencode-night-shift/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/opencode-night-shift)](https://www.npmjs.com/package/opencode-night-shift)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![npm](https://img.shields.io/npm/v/opencode-night-shift?style=flat-square&label=npm)](https://www.npmjs.com/package/opencode-night-shift)
+[![license](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+[![node](https://img.shields.io/badge/node-%3E%3D20-3c873a?style=flat-square)](#install)
+[![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen?style=flat-square)](#install)
+[![for](https://img.shields.io/badge/for-opencode-7c5cff?style=flat-square)](https://opencode.ai)
 
----
+**Arm one or more opencode sessions, give them an end time, then go to sleep. Night-shift keeps them working — and stops on schedule.**
 
-## 为什么不是「又一个自动续跑」
+**[Install](#install) · [Quick start](#quick-start) · [Configuration](#configuration) · [How it works](#how-it-works) · [FAQ](#faq)**
 
-市面上已有不少 auto-continue / loop 插件（`opencode-auto-resume`、`opencode-loop`、goal 模式等），它们解决的是「别停下来」。本项目解决的是另一个问题：**「替我值一个班」**。
+</div>
 
-| 能力 | 常见 auto-continue / loop | 本项目（班次制） |
+## Why not "yet another auto-continue"
+
+There are already several auto-continue / loop plugins for opencode (`opencode-auto-resume`, `opencode-loop`, goal-mode plugins). They answer *"don't stop"*. Night-shift answers a different question: **"work a shift for me."**
+
+| | Typical auto-continue / loop | Night-shift |
 | --- | --- | --- |
-| 停止条件 | 无限循环 / 目标完成 | **到点收工**（`endTime`，如 08:30） |
-| 会话数量 | 通常单会话 | **一个班次看多个会话**，各自计数 |
-| 消息内容 | 固定「继续」 | **模板 + 真实时间锚点**（`{time}` / `{remaining}`） |
-| 忙碌感知 | 少数支持 | **发送前检查会话状态**，绝不插队 |
-| 完成语义 | 全局停止 | **按会话移除**，其余继续 |
-| 依赖 | 不一 | **零依赖** |
+| Stop condition | run forever / until a goal is done | **until an end time** (`endTime`, e.g. `08:30`) |
+| Sessions | usually one | **many sessions in one shift**, counted per session |
+| Message | fixed "continue" | **template with real-clock anchors** (`{time}` / `{remaining}`) |
+| Busy sessions | few handle it | **checked before every send** — never queues into a running turn |
+| Completion | global stop | **removes just that session**, the rest keep working |
+| Dependencies | varies | **zero** |
 
-核心使用场景：**晚上把任务交给它，睡觉；早上到点它自动收工**，日志里能看到夜里被拉起几次、每个会话干到几点。
+Typical use: hand your overnight work to a shift, sleep, and in the morning read `night-shift.log` to see how many times each session was picked up and when the shift ended.
 
-## 功能
+## Features
 
-- ⏰ **班次窗口**：`enabled` + `endTime`，到点自动全局停止
-- 🗂 **多会话**：一次值守多个会话；某个会话输出完成标记后只移除它
-- 🕐 **真实时间锚点**：续跑消息里的 `{time}` / `{remaining}` 由插件替换成本地真实时间，专治“天亮了我不干了”的幻觉
-- 🛡 **误判防护**：自己发的消息不会触发停止；`别收工` 不会触发停止；完成标记只认最后一行（兼容 markdown 加粗与全角括号）
-- 😴 **忙碌感知**：会话正忙（busy/retry）时跳过，等下次空闲
-- 🔁 **卡死自愈（可选搭配）**：配合网络错误自动续跑类插件使用，本项目只负责“该不该继续”，不抢网络错误的活
-- ⚡ **性能**：通过 `message.updated` 跟踪最后一条助手消息，检查时只取那一条（大会话不再全量拉取）
-- 🧪 **可测试**：22 个单元测试，CI 覆盖 Linux + Windows
+- **Shift window** — `enabled` + `endTime`; the shift stops globally when the time is reached.
+- **Multi-session** — supervise several sessions at once; a completion marker removes only that session.
+- **Real-clock anchors** — `{time}` / `{remaining}` are rendered from the actual local clock, which also helps against "it must be morning by now" hallucinations.
+- **False-positive guards** — the plugin never reacts to its own messages; `别收工` ("don't stop") does not stop; completion markers are only recognized on the last line (markdown bold and full-width brackets tolerated).
+- **Busy-aware** — skips a session while it is `busy`/`retrying` and resumes on the next idle.
+- **No session aborts** — the plugin never kills a running turn; stalled-session recovery is left to specialists.
+- **Fast checks** — tracks the last assistant message via `message.updated` and fetches only that one (fallback: full list).
+- **Tested** — 22 unit tests, CI on Linux + Windows × Node 20/22.
 
-## 安装
+## Install
 
-要求 opencode（插件 API `@opencode-ai/plugin` 1.18.x），Node ≥ 20，无需任何运行依赖。
+Requirements: [opencode](https://opencode.ai) (plugin API `@opencode-ai/plugin` 1.18.x), Node ≥ 20. No runtime dependencies.
 
-**方式一：npm 插件（推荐）**
+**Option A — from npm (recommended)**
 
 ```jsonc
 // opencode.json
@@ -49,106 +57,108 @@
 }
 ```
 
-**方式二：手动安装**
+**Option B — manual**
 
-把 `src/night-shift.js` 复制到 `~/.config/opencode/plugins/` 目录，重启 opencode。
+Copy `src/night-shift.js` into `~/.config/opencode/plugins/` and restart opencode.
 
-> 从源码 checkout 运行时会自动把数据存到 `<repo>/data/`；npm 安装时存到 `~/.local/share/opencode-night-shift/`。都可用环境变量覆盖。
+Data lives in:
 
-## 使用
+- running from a source checkout → `<repo>/data/`
+- installed from npm → `~/.local/share/opencode-night-shift/`
 
-插件没有图形界面，两种方式开始一个班次：
+Both can be overridden with `OC_NIGHT_DIR`.
 
-**A. 编辑配置文件（无需重启，插件按修改时间热加载）**
+## Quick start
 
-数据目录下的 `night-shift.json`：
+Create (or edit) `night-shift.json` in the data directory — the plugin hot-reloads on file changes, no restart needed:
 
 ```json
 {
   "enabled": true,
   "endTime": "08:30",
-  "message": "现在是 {time}（距离结束还有 {remaining}）。\n\n请继续未完成的任务，不要停止、不要等待用户输入。\n如果全部完成并通过验证，最后单独输出一行：[夜间任务完成]",
+  "message": "Now {time} ({remaining} left).\n\nContinue the task: do not stop, do not wait for user input.\nIf everything is done, review or run tests to verify.\nWhen fully verified, end your last line with: [task done]",
   "sessions": [
-    { "id": "ses_你的会话ID", "sent": 0, "lastSentAt": 0 }
+    { "id": "ses_your_session_id", "sent": 0, "lastSentAt": 0 }
   ]
 }
 ```
 
-- `{time}` / `{remaining}` 会被替换为真实时间与剩余时长
-- `endAt` 可省略，插件会根据 `endTime` 自动算出下一次该时间点
-- 从旧版单会话配置（`sessionId`）会自动迁移
+Find session IDs in opencode (they are `ses_...`), or use the optional web dashboard to tick sessions and set the shift.
 
-**B. 用可选的网页面板**（另一个工具：`opencode-dashboard`，本仓库不包含）勾选会话、设置结束时间与消息模板。
+**Stopping a shift** — any one of:
 
-**停止方式（任一）**
+- the clock reaches `endTime` (global stop)
+- a short message starting with a stop phrase in any watched session: `收工` / `先收工吧` / `停止夜班，睡觉了` (`别收工` will not trigger it)
+- the model ends its last line with `[夜间任务完成]` / `[task done]` (that session only)
 
-- 到 `endTime` 自动收工
-- 在任一被值守的会话里发一条**以停止词开头**的短消息：`收工` / `先收工吧` / `停止夜班，睡觉了`（`别收工` 不会误触发）
-- 模型最后一行输出 `[夜间任务完成]` / `[task done]`（只停那一个会话）
+**Watch it work** — `night-shift.log` in the data directory records every continuation, skip reason, and stop.
 
-**日志**：数据目录下的 `night-shift.log`，记录每次续跑、跳过原因、自动停止原因。
+## Configuration
 
-## 配置参考
-
-| 字段 | 说明 |
+| Field | Description |
 | --- | --- |
-| `enabled` | 班次开关 |
-| `endTime` | 本地时间 `HH:MM`，到点全局停止 |
-| `endAt` | 绝对时间戳（毫秒），可省略 |
-| `message` | 续跑消息模板（支持 `{time}` `{remaining}`） |
-| `sessions[]` | 值守的会话列表：`{ id, sent, lastSentAt }` |
+| `enabled` | shift on/off |
+| `endTime` | local `HH:MM`; global stop at that time |
+| `endAt` | absolute epoch ms — optional, derived from `endTime` when omitted |
+| `message` | continuation template (`{time}` `{remaining}` supported) |
+| `sessions[]` | `{ id, sent, lastSentAt }` per watched session |
 
-环境变量：
+Environment variables:
 
-| 变量 | 默认 | 说明 |
+| Variable | Default | Description |
 | --- | --- | --- |
-| `OC_NIGHT_DIR` | 见上 | 数据目录 |
-| `OC_NIGHT_CONFIG` / `OC_NIGHT_LOG` | 同上 | 单独指定配置文件 / 日志路径 |
-| `OC_NIGHT_DELAY_MS` | `15000` | 空闲后延迟多久发续跑（给手动干预留时间） |
-| `OC_NIGHT_MIN_INTERVAL_MS` | `30000` | 同一会话两次续跑的最小间隔（被挡住的空闲会补发，不丢事件） |
-| `OC_NIGHT_SHIFT` | — | 设为 `0` 完全禁用插件 |
+| `OC_NIGHT_DIR` | see above | data directory |
+| `OC_NIGHT_CONFIG` / `OC_NIGHT_LOG` | inside it | override config / log path |
+| `OC_NIGHT_DELAY_MS` | `15000` | wait before sending after a session goes idle |
+| `OC_NIGHT_MIN_INTERVAL_MS` | `30000` | minimum gap between two continuations in one session (blocked idles are retried, never dropped) |
+| `OC_NIGHT_SHIFT` | — | set to `0` to disable the plugin entirely |
 
-## 工作原理（30 秒版）
+## How it works
 
-插件订阅 opencode 的三类事件：
+<img src="assets/how-it-works.svg" alt="How it works" width="100%">
 
-- `session.idle` → 该会话是否在被值守列表里？上一轮是错误吗（交给网络恢复类插件）？末行有完成标记吗？都不是 → 延迟后发送模板消息
-- `session.status` → 记录 busy/retry，发送前复查，避免插队
-- `message.updated` → 记录最后一条助手消息 ID，检查时只取这一条
+The plugin subscribes to three event types:
 
-配置读写对多进程（插件 + 外部面板）做了兼容：BOM 容错、未知字段保留、旧格式迁移、mtime 热加载。
+- `session.idle` — is this session armed? was the last turn an error (leave it to a network-recovery plugin)? does it end with a completion marker? if not → send the template after a short delay.
+- `session.status` — track `busy`/`retry` per session and re-check right before sending, so a continuation never queues into a running turn.
+- `message.updated` — remember the last assistant message id so the check fetches a single message instead of the whole history.
 
-## 开发
+Config I/O is multi-process friendly: BOM tolerance, unknown-field preservation, legacy-format migration, mtime-based hot reload.
 
-```bash
-npm test        # node:test，22 个用例
-```
+## Use cases
 
-仓库结构：
+| Situation | What you do |
+| --- | --- |
+| Overnight refactor or long build/fix loop | arm the session, set `endTime: 08:30`, sleep |
+| Several agents running in parallel | arm all of them — each gets its own counter and completion state |
+| Want a morning report | read `night-shift.log` (or the dashboard) when you wake up |
+| Keep a session alive but stop before a deadline | `endTime` gives you a hard stop instead of an infinite loop |
 
-```
-src/night-shift.js        插件本体（零依赖）
-test/night-shift.test.mjs 单元测试（含 mock opencode client）
-.github/workflows/ci.yml  CI：Linux + Windows × Node 20/22
-```
+## Safety
+
+> [!IMPORTANT]
+> Night-shift makes **no network requests**, only reads/writes three local files, and **never aborts** a running session. It can, however, send messages into sessions — with a permissive permission setup a continued session may run commands, exactly like a normal user turn. Use the stop phrases or `endTime` if a shift should end early.
 
 ## FAQ
 
-- **它会强制中止卡住的会话吗？** 不会。设计上从不 abort 会话，避免误杀你正在跑的长任务；卡死场景交给专门的卡死恢复类插件。
-- **会上传数据吗？** 不会。只读写本地文件，不发起任何网络请求。
-- **和网络错误自动续跑冲突吗？** 不冲突：本插件遇到错误消息会跳过，让专门的错误恢复插件处理。
-- **日志/提示是中文？** 默认中文，`message` 模板可自定义为任意语言；完成标记同时识别 `[task done]`。
+- **Does it kill stuck sessions?** No. Recovery for frozen streams belongs to dedicated plugins; night-shift deliberately never aborts your long-running work.
+- **Does it upload anything?** No. Local files only.
+- **Does it conflict with network-error auto-resume plugins?** No — night-shift skips turns that ended in an error and leaves them to those plugins.
+- **Logs and messages are Chinese?** Defaults are Chinese; `message` is a template you can write in any language, and the completion marker accepts `[task done]`.
 
-## English (condensed)
+## Development
 
-**opencode-night-shift** is a shift-based session supervisor plugin for [opencode](https://opencode.ai): arm one or more sessions with an end time, and the plugin sends your continuation template whenever they go idle — with real-clock anchors, busy-awareness, per-session completion markers and zero dependencies.
-
-```jsonc
-// opencode.json
-{ "plugin": ["opencode-night-shift"] }
+```bash
+npm test        # node:test — 22 cases
 ```
 
-Config lives in `night-shift.json` (see the schema above); `{time}` and `{remaining}` placeholders are rendered with the real local clock. Stop with the end time, a short stop phrase (`收工`), or a `[task done]` marker on the last line. No network calls, no session aborts. MIT licensed.
+```
+src/night-shift.js          plugin (zero dependencies)
+test/night-shift.test.mjs   unit tests with a mock opencode client
+.github/workflows/ci.yml    CI: Linux + Windows × Node 20/22
+```
+
+Contributions are welcome. Please keep changes covered by tests and keep `README.md` / `README.zh-CN.md` in sync.
 
 ## License
 
