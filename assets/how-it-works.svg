@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="340" viewBox="0 0 1280 340" fill="none" role="img" aria-label="How night-shift works">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" fill="none" role="img" aria-label="How night-shift works">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="340" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="360" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0a0f1f"/>
       <stop offset="1" stop-color="#141b31"/>
     </linearGradient>
@@ -8,7 +8,7 @@
       <path d="M0,0 L10,5 L0,10 z" fill="#4b5b7a"/>
     </marker>
   </defs>
-  <rect width="1280" height="340" rx="24" fill="url(#bg)"/>
+  <rect width="1280" height="360" rx="24" fill="url(#bg)"/>
   <text x="64" y="64" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22" font-weight="700" fill="#eef2ff">How it works</text>
   <text x="64" y="92" font-family="-apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#7f8ca6">Event-driven: the plugin only reacts to session events, and only sends a template message when every check passes.</text>
 
@@ -19,7 +19,7 @@
   <rect x="368" y="110" width="300" height="128" rx="14" fill="#0d1426" stroke="#26304a"/>
   <text x="392" y="146" font-family="-apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="15" fill="#eef2ff">checks, all must pass</text>
   <text x="392" y="174" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13.5" fill="#8ea0bd">armed?  not an error?  not done?</text>
-  <text x="392" y="198" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13.5" fill="#8ea0bd">session idle (not busy)?  before endTime?</text>
+  <text x="392" y="198" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13.5" fill="#8ea0bd">idle (not busy)?  before endTime?</text>
 
   <rect x="732" y="128" width="240" height="92" rx="14" fill="#0d1426" stroke="#26304a"/>
   <text x="756" y="166" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16" fill="#f8e7a8">send template</text>
@@ -34,5 +34,6 @@
   <line x1="972" y1="174" x2="1024" y2="174" stroke="#4b5b7a" stroke-width="2" marker-end="url(#arrow)"/>
   <path d="M1126,220 L1126,268 L184,268 L184,232" stroke="#4b5b7a" stroke-width="2" fill="none" marker-end="url(#arrow)" stroke-dasharray="6 6"/>
 
-  <text x="64" y="316" font-family="-apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14.5" fill="#7f8ca6">Loop ends when: endTime is reached (global stop)  ·  the model ends its last line with [夜间任务完成] / [task done] (that session only)  ·  a short stop phrase like 收工 is sent.</text>
+  <text x="64" y="316" font-family="-apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14.5" fill="#7f8ca6">Loop ends when: endTime is reached (global stop)  ·  the model ends its last line with a done marker (that session only)</text>
+  <text x="64" y="340" font-family="-apple-system, 'Segoe UI', 'Microsoft YaHei', sans-serif" font-size="14.5" fill="#7f8ca6">·  a short stop phrase like 收工 is sent in any watched session.</text>
 </svg>
