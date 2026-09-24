@@ -1,0 +1,25 @@
+name: Bug report / Bug 反馈
+description: 报告一个问题 / Report a bug
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: 发生了什么 / What happened
+      description: 现象、期望行为、复现步骤 / What happened, what you expected, steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: 环境 / Environment
+      description: opencode 版本、操作系统、Node 版本 / opencode version, OS, Node version
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志 / Logs
+      description: night-shift.log 相关片段 / Relevant excerpts from night-shift.log
+    validations:
+      required: false
