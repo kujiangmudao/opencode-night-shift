@@ -37,7 +37,7 @@
 
 ## 安装
 
-要求 opencode（插件 API `@opencode-ai/plugin` 1.18.x），Node ≥ 18，无需任何运行依赖。
+要求 opencode（插件 API `@opencode-ai/plugin` 1.18.x），Node ≥ 20，无需任何运行依赖。
 
 **方式一：npm 插件（推荐）**
 
